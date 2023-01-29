@@ -54,17 +54,6 @@ make
 make full-build
 ```
 
+## Launching the Maya plugin
 
-Update
-```
-TARGET        = mayaUiPluginTemplate.dylib
-TARGETD       = mayaUiPluginTemplate.dylib
-```
-
-to
-```
-TARGET        = mayaUiPluginTemplate.bundle
-TARGETD       = mayaUiPluginTemplate.bundle
-```
-
-make -f main.mak
+Once the plugin is complete, follow this [doc](https://help.autodesk.com/view/MAYAUL/2023/ENU/?guid=Maya_SDK_LoadingAndUnloadingPlugins_Loading_Samples_Plug_ins_Into_Maya_html) to load the plugin. Once you load the plugin, you can run a MEL script to open the template plugin. Example `qtPlugin`
