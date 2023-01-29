@@ -1,0 +1,6 @@
+build
+*.dylib
+.qmake.stash
+*.o
+*.mak
+moc_*
