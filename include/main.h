@@ -9,9 +9,27 @@
 // or hard copy form.
 
 #include <maya/MPxCommand.h>
-#include <vector>
+#include <QtWidgets/QDialog>
+#include <QtCore/QPointer>
 
-#include "button.h"
+class QDialogButtonBox;
+
+class Window : public QDialog {
+	Q_OBJECT
+
+    public:
+        Window(QWidget* parent = 0);
+
+    private Q_SLOTS:
+        void clickHandler();
+
+    private:
+        QPointer<QWidget> _window;
+        QDialogButtonBox* _buttonBox;
+};
+
+
+class QDialogButtonBox;
 
 class mayaUiPluginTemplate : public MPxCommand {
     public:
@@ -20,7 +38,7 @@ class mayaUiPluginTemplate : public MPxCommand {
 
         MStatus doIt(const MArgList& args);
 
-        static QPointer<Button> button;
+        static QPointer<Window> fCurrentDialog;
         static const MString commandName;
 };
 
