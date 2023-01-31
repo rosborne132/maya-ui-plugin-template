@@ -10,17 +10,91 @@
 //+
 
 //	Must ensure that at least one Qt header is included before anything else.
-#include <maya/MDoubleArray.h>
-#include <maya/MFnDependencyNode.h>
-#include <maya/MFnNurbsCurve.h>
+#include <QtWidgets/QComboBox>
+#include <QtCore/QFile>
+#include <QtCore/QLocale>
+#include <QtUiTools/QtUiTools>
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
 #include <maya/MObject.h>
-#include <maya/MPoint.h>
-#include <maya/MPointArray.h>
 
 #include <main.h>
-#include <button.h>
+
+// ==========================================================================
+//
+//			Window class
+//
+// ==========================================================================
+Window::Window(QWidget* parent) : QDialog(parent) {
+	//	Load the form from its resource.
+	QUiLoader loader;
+	QFile file(":/main.ui");
+
+	file.open(QFile::ReadOnly);
+	_window = loader.load(&file, this);
+	file.close();
+
+    if (_window) {
+		//	Destroy the dialog when it is closed.
+		_window->setAttribute(Qt::WA_DeleteOnClose, true);
+
+		//	Locate the various widgets inside the form.
+		_buttonBox = _window->findChild<QDialogButtonBox*>("buttonBox");
+
+		//	Connect to the buttonBox's 'accepted' signal, which indicates
+		//	that the Ok button has been clicked.
+		connect(_buttonBox, SIGNAL(accepted()), this, SLOT(clickHandler()));
+
+		//	When the form is destroyed, destroy us as well.
+		connect(
+			_window, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater())
+		);
+
+		_window->show();
+    }
+}
+
+void Window::clickHandler() {
+     MGlobal::displayInfo("Button clicked!");
+}
+
+// ==========================================================================
+//
+//			Window class
+//
+// ==========================================================================
+// Window::Window(QWidget* parent) : QDialog(parent) {
+// 	//	Load the form from its resource.
+// 	QUiLoader loader;
+// 	QFile file(":/main.ui");
+
+// 	file.open(QFile::ReadOnly);
+// 	_window = loader.load(&file, this);
+// 	file.close();
+
+//     if (_window) {
+// 		//	Destroy the dialog when it is closed.
+// 		_window->setAttribute(Qt::WA_DeleteOnClose, true);
+
+// 		//	Locate the various widgets inside the form.
+// 		_buttonBox = _window->findChild<QDialogButtonBox*>("buttonBox");
+
+// 		//	Connect to the buttonBox's 'accepted' signal, which indicates
+// 		//	that the Ok button has been clicked.
+// 		connect(_buttonBox, SIGNAL(accepted()), this, SLOT(clickHandler()));
+
+// 		//	When the form is destroyed, destroy us as well.
+// 		connect(
+// 			_window, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater())
+// 		);
+
+// 		_window->show();
+//     }
+// }
+
+// void Window::clickHandler() {
+//      MGlobal::displayInfo("Button clicked!");
+// }
 
 // ==========================================================================
 //
@@ -32,22 +106,20 @@
 //	can destroy it if the plugin is unloaded. The QPointer will
 //	automatically set itself to zero if the button window is destroyed
 //	for any reason.
-QPointer<Button> mayaUiPluginTemplate::button;
+QPointer<Window> mayaUiPluginTemplate::fCurrentDialog;
 
 const MString mayaUiPluginTemplate::commandName("qtPlugin");
 
-void mayaUiPluginTemplate::cleanup() { if (!button.isNull()) delete button; }
+void mayaUiPluginTemplate::cleanup() { if (!fCurrentDialog.isNull()) delete fCurrentDialog; }
 
 MStatus mayaUiPluginTemplate::doIt(const MArgList& /* args */) {
-	//	Create a window containing a Button, if one does not already
-	//	exist. Otherwise just make sure that the existing window is visible.
-	if (button.isNull()) {
-		button = new Button("Click Me");
-		button->connect(button, SIGNAL(clicked(bool)), button, SLOT(clickHandler(bool)));
-		button->show();
+	//	Create the Object Creator window, if it does not already exist
+	//	Otherwise just make sure that the existing window is visible.
+    if (fCurrentDialog.isNull()) {
+		fCurrentDialog = new Window();
 	} else {
-		button->showNormal();
-		button->raise();
+		fCurrentDialog->showNormal();
+		fCurrentDialog->raise();
 	}
 
 	return MS::kSuccess;

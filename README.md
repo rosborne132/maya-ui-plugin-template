@@ -51,9 +51,17 @@ make generate
 make
 
 // builds a new project
-make full-build
+make build-plugin
 ```
 
 ## Launching the Maya plugin
 
 Once the plugin is complete, follow this [doc](https://help.autodesk.com/view/MAYAUL/2023/ENU/?guid=Maya_SDK_LoadingAndUnloadingPlugins_Loading_Samples_Plug_ins_Into_Maya_html) to load the plugin. Once you load the plugin, you can run a MEL script to open the template plugin. Example `qtPlugin`
+
+
+### Working on the UI within Maya
+
+```
+string $dialog = `loadUI -uiFile "{path}/maya-ui-plugin-template/main.ui"`;
+showWindow $dialog;
+```

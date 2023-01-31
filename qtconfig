@@ -4,7 +4,7 @@ CONFIG += qt warn_on plugin
 
 DEFINES		+= CC_GNU_ _LANGUAGE_C_PLUS_PLUS
 INCLUDEPATH	+= .. "$${DEVKIT_LOCATION}/include"
-
+TARGET_EXT	= bundle
 QMAKE_EXTENSION_SHLIB	= dylib
 
 QMAKE_CC	= clang
@@ -30,4 +30,3 @@ QMAKE_LFLAGS	+= -stdlib=libc++ -fno-gnu-keywords -fpascal-strings -dynamiclib
 QMAKE_LINK		= $${QMAKE_CXX}
 
 MAKEFILE = $${TARGET}.mak
-
